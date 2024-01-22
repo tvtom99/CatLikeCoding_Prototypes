@@ -7,4 +7,15 @@ public class Game : MonoBehaviour
 
     [SerializeField]
     Paddle topPaddle, bottomPaddle;
+
+    private void Awake()
+    {
+        ball.StartNewGame();
+    }
+
+    private void Update()
+    {
+        ball.Move();
+        ball.UpdateVisualisation();
+    }
 }
