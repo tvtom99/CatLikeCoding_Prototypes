@@ -16,12 +16,29 @@ public class Paddle : MonoBehaviour
     [SerializeField]
     TextMeshPro scoreText;
 
+    [SerializeField]
+    MeshRenderer goalRenderer;
+
+    [SerializeField, ColorUsage(true, true)]
+    Color goalColour = Color.white;
+
     int score;
 
     float extents, targetingBias;
 
+    static readonly int
+        emissionsColourId = Shader.PropertyToID("_EmissionColour"),
+        faceColourId = Shader.PropertyToID("_FaceColor"),
+        timeOfLastHitId = Shader.PropertyToID("_TimeOfLastHit");
+
+    Material paddleMaterial, goalMaterial, scoreMaterial;
+
     private void Awake()
     {
+        goalMaterial = goalRenderer.material;
+        goalMaterial.SetColor(emissionsColourId, goalColour);
+        paddleMaterial = GetComponent<MeshRenderer>().material;
+        scoreMaterial = scoreText.fontMaterial;
         SetScore(0);    
     }
 
@@ -86,18 +103,32 @@ public class Paddle : MonoBehaviour
         hitFactor =
             (ballX - transform.localPosition.x) /
             (extents + ballExtents);
-        return -1f <= hitFactor && hitFactor <= 1f;
+        bool success =  -1f <= hitFactor && hitFactor <= 1f;
+        if (success)
+        {
+            paddleMaterial.SetFloat(timeOfLastHitId, Time.time);
+        }
+        return success;
     }
 
     void SetScore(int newScore, float pointsToWin = 1000f)
     {
         score = newScore;
         scoreText.SetText("{0}", newScore);
+        if(scoreMaterial != null)   //Checking this seemed to fix the error and now the game works fine?
+        {
+            scoreMaterial.SetColor(faceColourId, goalColour * (newScore / pointsToWin));
+        }
+        else
+        {
+            Debug.Log("scoreMaterial is not set");
+        }
         SetExtents(Mathf.Lerp(maxExtents, minExtents, newScore / (pointsToWin - 1f)));
     }
 
     public bool ScorePoint(int pointsToWin)
     {
+        goalMaterial.SetFloat(timeOfLastHitId, Time.time);
         SetScore(score + 1, pointsToWin);
         return score >= pointsToWin;        //Okay this is awful code, why is the function doing BOTH score incrementation AND checking if the player has enough points to win? This tutorial smh
     }
