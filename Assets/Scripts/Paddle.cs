@@ -91,7 +91,6 @@ public class Paddle : MonoBehaviour
 
     void SetScore(int newScore, float pointsToWin = 1000f)
     {
-        Debug.Log("Score updated!");
         score = newScore;
         scoreText.SetText("{0}", newScore);
         SetExtents(Mathf.Lerp(maxExtents, minExtents, newScore / (pointsToWin - 1f)));

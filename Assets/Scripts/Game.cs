@@ -22,6 +22,9 @@ public class Game : MonoBehaviour
     [SerializeField, Min(1f)]
     float newGameDelay = 3f;
 
+    [SerializeField]
+    LiveleyCamera liveleyCamera;
+
     float countdownUntilNextGame;
 
     private void Awake()
@@ -105,10 +108,12 @@ public class Game : MonoBehaviour
         float xExtents = arenaExtents.x - ball.Extents;
         if (x > xExtents)
         {
+            liveleyCamera.PushXZ(ball.Velocity);
             ball.BounceX(xExtents);
         }
         else if (x < -xExtents)
         {
+            liveleyCamera.PushXZ(ball.Velocity);
             ball.BounceX(-xExtents);
         }
     }
@@ -120,15 +125,20 @@ public class Game : MonoBehaviour
 
         BounceXIfNeeded(bounceX);
         bounceX = ball.Position.x - ball.Velocity.x * durationAfterBounce;
+        liveleyCamera.PushXZ(ball.Velocity);
         ball.BounceY(boundary);
 
         if (defender.HitBall(bounceX, ball.Extents, out float hitFactor))
         {
             ball.SetXPositionAndSpeed(bounceX, hitFactor, durationAfterBounce);
         }
-        else if(attacker.ScorePoint(pointsToWin))
+        else 
         {
-            EndGame();
+            liveleyCamera.JostleY();
+            if (attacker.ScorePoint(pointsToWin))
+            {
+                EndGame();
+            }
         }
     }
 }
