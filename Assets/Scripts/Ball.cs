@@ -11,10 +11,12 @@ public class Ball : MonoBehaviour
         extents = 0.5f; //This value tracks how wide the ball is from its center point
 
     [SerializeField]
-    ParticleSystem bounceParticleSystem;
+    ParticleSystem bounceParticleSystem, startParticleSystem, trailParticleSystem;
 
     [SerializeField]
-    int bounceParticleEmission = 20;
+    int 
+        bounceParticleEmission = 20,
+        startParticalEmission = 100;
 
     //Tracks the balls position and velocity in [x,z] 3D space, as the y of the Vector2 is used to position in z.
     Vector2 position, velocity;
@@ -34,7 +36,7 @@ public class Ball : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-    public void UpdateVisualisation() => transform.localPosition = new Vector3(position.x, 0f, position.y); //Use position vector to move the ball to its new position
+    public void UpdateVisualisation() => trailParticleSystem.transform.localPosition = transform.localPosition = new Vector3(position.x, 0f, position.y); //Use position vector to move the ball to its new position
 
     public void Move() => position += velocity * Time.deltaTime;    //Apply velocity to position vector
 
@@ -45,12 +47,22 @@ public class Ball : MonoBehaviour
         velocity.x = Random.Range(-maxStartXSpeed, maxStartXSpeed);
         velocity.y = -constantYSpeed;
         gameObject.SetActive(true);
+        startParticleSystem.Emit(startParticalEmission);
+        SetTrailEmission(true);
+        trailParticleSystem.Play();
     }
 
     public void EndGame()
     {
         position.x = 0f;
         gameObject.SetActive(false);
+        SetTrailEmission(false);
+    }
+
+    void SetTrailEmission(bool enabled)
+    {
+        ParticleSystem.EmissionModule emission = trailParticleSystem.emission;
+        emission.enabled = enabled;
     }
 
     public void BounceX(float boundary) //Reflect on the X axis
