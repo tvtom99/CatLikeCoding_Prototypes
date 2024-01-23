@@ -1,3 +1,5 @@
+using TMPro;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class Game : MonoBehaviour
@@ -11,19 +13,78 @@ public class Game : MonoBehaviour
     [SerializeField, Min(0f)]
     Vector2 arenaExtents = new Vector2(10f, 10f);   //Size of the arena (it is not set by the physical bound objects!)
 
+    [SerializeField]
+    int pointsToWin = 3;
+
+    [SerializeField]
+    TextMeshPro countdownText;
+
+    [SerializeField, Min(1f)]
+    float newGameDelay = 3f;
+
+    float countdownUntilNextGame;
+
     private void Awake()
     {
+        countdownUntilNextGame = newGameDelay;
+        StartNewGame();
+    }
+
+    void StartNewGame()
+    {
         ball.StartNewGame();
+        bottomPaddle.StartNewGame();
+        topPaddle.StartNewGame();
     }
 
     private void Update()
     {
         bottomPaddle.Move(ball.Position.x, arenaExtents.x);
         topPaddle.Move(ball.Position.x, arenaExtents.x);
+        
+        //Check if the game should start yet
+        if(countdownUntilNextGame <= 0f)
+        {
+            UpdateGame();
+        }
+        else
+        {
+            UpdateCountdown();
+        }
+    }
+
+    void UpdateGame()
+    {
         ball.Move();
         BounceXIfNeeded(ball.Position.x);
         BounceYIfNeeded();
         ball.UpdateVisualisation();
+    }
+
+    void UpdateCountdown()
+    {
+        countdownUntilNextGame -= Time.deltaTime;
+        if(countdownUntilNextGame <= 0f)
+        {
+            countdownText.gameObject.SetActive(false);
+            StartNewGame();
+        }
+        else
+        {
+            float displayValue = Mathf.Ceil(countdownUntilNextGame);
+            if (displayValue < newGameDelay)
+            {
+                countdownText.SetText("{0}", displayValue);
+            }
+        }
+    }
+
+    void EndGame()
+    {
+        countdownUntilNextGame = newGameDelay;
+        countdownText.SetText("GAME OVER");
+        countdownText.gameObject.SetActive(true);
+        ball.EndGame();
     }
 
     void BounceYIfNeeded()
@@ -31,11 +92,11 @@ public class Game : MonoBehaviour
         float yExtents = arenaExtents.y - ball.Extents;
         if(ball.Position.y > yExtents)
         {
-            BounceY(yExtents, topPaddle);
+            BounceY(yExtents, topPaddle, bottomPaddle);
         }
         else if(ball.Position.y < -yExtents) 
         {
-            BounceY(-yExtents, bottomPaddle);
+            BounceY(-yExtents, bottomPaddle, topPaddle);
         }
     }
 
@@ -52,7 +113,7 @@ public class Game : MonoBehaviour
         }
     }
 
-    void BounceY(float boundary, Paddle defender)
+    void BounceY(float boundary, Paddle defender, Paddle attacker)
     {
         float durationAfterBounce = (ball.Position.y - boundary) / ball.Velocity.y;
         float bounceX = ball.Position.x - ball.Velocity.x * durationAfterBounce;
@@ -64,6 +125,10 @@ public class Game : MonoBehaviour
         if (defender.HitBall(bounceX, ball.Extents, out float hitFactor))
         {
             ball.SetXPositionAndSpeed(bounceX, hitFactor, durationAfterBounce);
+        }
+        else if(attacker.ScorePoint(pointsToWin))
+        {
+            EndGame();
         }
     }
 }

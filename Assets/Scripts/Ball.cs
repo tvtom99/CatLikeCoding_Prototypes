@@ -22,6 +22,11 @@ public class Ball : MonoBehaviour
 
     /*Other*/
 
+    private void Awake()
+    {
+        gameObject.SetActive(false);
+    }
+
     public void UpdateVisualisation() => transform.localPosition = new Vector3(position.x, 0f, position.y); //Use position vector to move the ball to its new position
 
     public void Move() => position += velocity * Time.deltaTime;    //Apply velocity to position vector
@@ -31,6 +36,13 @@ public class Ball : MonoBehaviour
         position = Vector2.zero;
         UpdateVisualisation();
         velocity = new Vector2(startXSpeed, -constantYSpeed);
+        gameObject.SetActive(true);
+    }
+
+    public void EndGame()
+    {
+        position.x = 0f;
+        gameObject.SetActive(false);
     }
 
     public void BounceX(float boundary) //Reflect on the X axis

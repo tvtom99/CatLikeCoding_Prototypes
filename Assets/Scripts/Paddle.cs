@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class Paddle : MonoBehaviour
@@ -9,6 +10,16 @@ public class Paddle : MonoBehaviour
 
     [SerializeField]
     bool isAI;
+
+    [SerializeField]
+    TextMeshPro scoreText;
+
+    int score;
+
+    public void StartNewGame()
+    {
+        SetScore(0);
+    }
 
     public void Move(float target, float arenaExtents)
     {
@@ -49,5 +60,18 @@ public class Paddle : MonoBehaviour
             (ballX - transform.localPosition.x) /
             (extents + ballExtents);
         return -1f <= hitFactor && hitFactor <= 1f;
+    }
+
+    void SetScore(int newScore)
+    {
+        Debug.Log("Score updated!");
+        score = newScore;
+        scoreText.SetText("{0}", newScore);
+    }
+
+    public bool ScorePoint(int pointsToWin)
+    {
+        SetScore(score + 1);
+        return score >= pointsToWin;        //Okay this is awful code, why is the function doing BOTH score incrementation AND checking if the player has enough points to win? This tutorial smh
     }
 }
