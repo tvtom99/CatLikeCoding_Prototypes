@@ -5,7 +5,7 @@ public class Ball : MonoBehaviour
     [SerializeField, Min(0f)]
     float
         maxXSpeed = 20f,
-        startXSpeed = 8f,    //The initial speed of the ball when the game starts
+        maxStartXSpeed = 8f,    //The initial speed of the ball when the game starts
         constantYSpeed = 10f,
         extents = 0.5f; //This value tracks how wide the ball is from its center point
 
@@ -35,7 +35,8 @@ public class Ball : MonoBehaviour
     {
         position = Vector2.zero;
         UpdateVisualisation();
-        velocity = new Vector2(startXSpeed, -constantYSpeed);
+        velocity.x = Random.Range(-maxStartXSpeed, maxStartXSpeed);
+        velocity.y = -constantYSpeed;
         gameObject.SetActive(true);
     }
 
