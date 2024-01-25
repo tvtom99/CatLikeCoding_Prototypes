@@ -11,7 +11,7 @@ public class Game : MonoBehaviour
     Paddle topPaddle, bottomPaddle;
 
     [SerializeField, Min(0f)]
-    Vector2 arenaExtents = new Vector2(10f, 10f);   //Size of the arena (it is not set by the physical bound objects!)
+    Vector2 arenaExtents = new Vector2(10f, 20f);   //Size of the arena (it is not set by the physical bound objects!)
 
     [SerializeField]
     int pointsToWin = 3;

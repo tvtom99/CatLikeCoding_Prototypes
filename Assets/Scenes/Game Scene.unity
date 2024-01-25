@@ -1090,6 +1090,10 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6961694972856851347, guid: 4a3a487696723334fb0b8b0e3f1b79b7, type: 3}
+      propertyPath: speed
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6961694972856851347, guid: 4a3a487696723334fb0b8b0e3f1b79b7, type: 3}
       propertyPath: scoreText
       value: 
       objectReference: {fileID: 1251038196}
@@ -1755,7 +1759,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6961694972856851347, guid: 4a3a487696723334fb0b8b0e3f1b79b7, type: 3}
       propertyPath: speed
-      value: 5
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6961694972856851347, guid: 4a3a487696723334fb0b8b0e3f1b79b7, type: 3}
       propertyPath: scoreText
@@ -1763,7 +1767,7 @@ PrefabInstance:
       objectReference: {fileID: 1742023267}
     - target: {fileID: 6961694972856851347, guid: 4a3a487696723334fb0b8b0e3f1b79b7, type: 3}
       propertyPath: minExtents
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6961694972856851347, guid: 4a3a487696723334fb0b8b0e3f1b79b7, type: 3}
       propertyPath: goalColour.b
